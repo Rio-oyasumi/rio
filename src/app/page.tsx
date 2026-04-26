@@ -24,7 +24,7 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="min-h-screen flex flex-col items-center justify-center px-4 text-center z-10 space-y-8 animate-in fade-in duration-1000">
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-headline text-white max-w-4xl leading-tight animate-breathing-glow">
+        <h1 className="text-6xl md:text-8xl lg:text-9xl font-cursive text-white max-w-5xl leading-tight animate-breathing-glow py-4">
           For the one who brings the stars into my night.
         </h1>
         <p className="text-xl md:text-2xl font-body italic text-accent max-w-2xl opacity-90">
