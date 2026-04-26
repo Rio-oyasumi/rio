@@ -1,3 +1,4 @@
+
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -10,8 +11,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
+        body: ['PT Sans', 'sans-serif'],
+        headline: ['Playfair Display', 'serif'],
         code: ['monospace'],
       },
       colors: {
@@ -88,10 +89,30 @@ export default {
             height: '0',
           },
         },
+        'breathing-glow': {
+          '0%, 100%': { textShadow: '0 0 10px rgba(255, 128, 188, 0.5), 0 0 20px rgba(255, 128, 188, 0.3)' },
+          '50%': { textShadow: '0 0 20px rgba(255, 128, 188, 0.8), 0 0 40px rgba(255, 128, 188, 0.6)' },
+        },
+        'sakura-fall': {
+          '0%': { transform: 'translateY(-10vh) translateX(0) rotate(0deg)', opacity: '0' },
+          '10%': { opacity: '0.8' },
+          '90%': { opacity: '0.8' },
+          '100%': { transform: 'translateY(110vh) translateX(100px) rotate(360deg)', opacity: '0' },
+        },
+        'monkey-run': {
+          '0%': { left: '-10%', transform: 'rotate(5deg)' },
+          '25%': { top: '20%', transform: 'rotate(-5deg)' },
+          '50%': { top: '80%', transform: 'rotate(5deg)' },
+          '75%': { top: '10%', transform: 'rotate(-5deg)' },
+          '100%': { left: '110%', transform: 'rotate(5deg)' },
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'breathing-glow': 'breathing-glow 3s ease-in-out infinite',
+        'sakura-fall': 'sakura-fall linear infinite',
+        'monkey-run': 'monkey-run linear infinite',
       },
     },
   },
