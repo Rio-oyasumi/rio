@@ -2,20 +2,41 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Heart, Star, Sparkles } from 'lucide-react';
+import { Heart, Star, Sparkles, Lock, MousePointer2, Fingerprint } from 'lucide-react';
 import FallingSakura from '@/components/FallingSakura';
 import RunningMonkeys from '@/components/RunningMonkeys';
 import LoveCatcher from '@/components/LoveCatcher';
 import FinalQuestion from '@/components/FinalQuestion';
+import { cn } from '@/lib/utils';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
+  
+  // States for the interactive cards
+  const [revealed1, setRevealed1] = useState(false);
+  const [revealed2, setRevealed2] = useState(false);
+  const [revealed3, setRevealed3] = useState(false);
+  const [scratchProgress, setScratchProgress] = useState(0);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) return null;
+
+  const handleScratch = () => {
+    if (revealed2) return;
+    setScratchProgress((prev) => {
+      const next = prev + 5;
+      if (next >= 100) {
+        setRevealed2(true);
+        return 100;
+      }
+      return next;
+    });
+  };
+
+  const isThirdUnlocked = revealed1 && revealed2;
 
   return (
     <main className="min-h-screen relative flex flex-col items-center">
@@ -35,37 +56,103 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Reasons Why Gallery */}
+      {/* Interactive Reasons Why Gallery */}
       <section className="w-full max-w-6xl px-4 py-24 z-10 space-y-16">
-        <h2 className="text-3xl font-headline text-center text-rose-300 tracking-widest uppercase">
-          A few reasons why...
-        </h2>
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl font-headline text-rose-300 tracking-widest uppercase">
+            A few reasons why...
+          </h2>
+          <p className="text-muted-foreground italic text-sm">Follow the clues to unlock my heart's secrets.</p>
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="glass p-8 rounded-3xl flex flex-col items-center text-center space-y-4 hover:bg-card/60 transition-colors">
-            <div className="bg-primary/20 p-4 rounded-full">
-              <Heart className="w-8 h-8 text-primary" />
-            </div>
-            <p className="text-lg font-body italic text-white/90">
-              "If my thoughts were a map, they’d all eventually lead back to you."
-            </p>
+          
+          {/* Card 1: Click to Reveal */}
+          <div 
+            onClick={() => setRevealed1(true)}
+            className={cn(
+              "relative glass p-8 rounded-3xl flex flex-col items-center text-center space-y-4 cursor-pointer transition-all duration-500 overflow-hidden min-h-[250px] justify-center",
+              !revealed1 ? "hover:scale-105" : "bg-card/60"
+            )}
+          >
+            {!revealed1 ? (
+              <div className="flex flex-col items-center space-y-4">
+                <div className="bg-primary/20 p-4 rounded-full animate-pulse">
+                  <Fingerprint className="w-8 h-8 text-primary" />
+                </div>
+                <p className="text-sm font-semibold text-primary/80 uppercase tracking-tighter">Tap to open</p>
+              </div>
+            ) : (
+              <div className="animate-in zoom-in fade-in duration-500 flex flex-col items-center space-y-4">
+                <Heart className="w-8 h-8 text-primary fill-primary/20" />
+                <p className="text-lg font-body italic text-white/90">
+                  "If my thoughts were a map, they’d all eventually lead back to you."
+                </p>
+              </div>
+            )}
           </div>
 
-          <div className="glass p-8 rounded-3xl flex flex-col items-center text-center space-y-4 hover:bg-card/60 transition-colors">
-            <div className="bg-accent/20 p-4 rounded-full">
-              <Star className="w-8 h-8 text-accent" />
-            </div>
-            <p className="text-lg font-body italic text-white/90">
-              "Most people try to stand out; you were just built that way. It suits you."
-            </p>
+          {/* Card 2: Scratch to Reveal */}
+          <div 
+            onMouseMove={handleScratch}
+            onTouchMove={handleScratch}
+            className={cn(
+              "relative glass p-8 rounded-3xl flex flex-col items-center text-center space-y-4 transition-all duration-500 overflow-hidden min-h-[250px] justify-center group",
+              !revealed2 ? "cursor-none" : "bg-card/60"
+            )}
+          >
+            {!revealed2 ? (
+              <>
+                <div 
+                  className="absolute inset-0 bg-neutral-600 flex flex-col items-center justify-center z-20 pointer-events-none transition-opacity duration-300"
+                  style={{ opacity: 1 - (scratchProgress / 100) }}
+                >
+                  <div className="bg-white/10 p-4 rounded-full mb-2">
+                    <MousePointer2 className="w-6 h-6 text-white/50" />
+                  </div>
+                  <p className="text-xs font-bold text-white/40 uppercase">Rub to scratch</p>
+                </div>
+                <p className="text-white/20 select-none">Scratching...</p>
+              </>
+            ) : (
+              <div className="animate-in zoom-in fade-in duration-500 flex flex-col items-center space-y-4">
+                <Star className="w-8 h-8 text-accent fill-accent/20" />
+                <p className="text-lg font-body italic text-white/90">
+                  "Most people try to stand out; you were just built that way. It suits you."
+                </p>
+              </div>
+            )}
           </div>
 
-          <div className="glass p-8 rounded-3xl flex flex-col items-center text-center space-y-4 hover:bg-card/60 transition-colors">
-            <div className="bg-secondary/20 p-4 rounded-full">
-              <Sparkles className="w-8 h-8 text-secondary" />
-            </div>
-            <p className="text-lg font-body italic text-white/90">
-              "I was going to build this site about the stars, but I realized they’re a lot less interesting than you."
-            </p>
+          {/* Card 3: Conditional Locked Card */}
+          <div 
+            onClick={() => isThirdUnlocked && setRevealed3(true)}
+            className={cn(
+              "relative glass p-8 rounded-3xl flex flex-col items-center text-center space-y-4 transition-all duration-500 overflow-hidden min-h-[250px] justify-center",
+              !isThirdUnlocked ? "opacity-50 grayscale cursor-not-allowed" : "cursor-pointer hover:bg-card/60",
+              revealed3 && "bg-card/60"
+            )}
+          >
+            {!revealed3 ? (
+              <div className="flex flex-col items-center space-y-4">
+                <div className={cn(
+                  "p-4 rounded-full",
+                  isThirdUnlocked ? "bg-secondary/40 animate-bounce" : "bg-muted"
+                )}>
+                  {isThirdUnlocked ? <Sparkles className="w-8 h-8 text-secondary" /> : <Lock className="w-8 h-8 text-muted-foreground" />}
+                </div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-secondary-foreground/60">
+                  {isThirdUnlocked ? "Ready to unlock" : "Solve the others first"}
+                </p>
+              </div>
+            ) : (
+              <div className="animate-in zoom-in fade-in duration-500 flex flex-col items-center space-y-4">
+                <Sparkles className="w-8 h-8 text-secondary fill-secondary/20" />
+                <p className="text-lg font-body italic text-white/90">
+                  "I was going to build this site about the stars, but I realized they’re a lot less interesting than you."
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>
