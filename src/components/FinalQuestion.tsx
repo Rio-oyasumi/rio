@@ -6,7 +6,15 @@ import { Button } from '@/components/ui/button';
 import confetti from 'canvas-confetti';
 
 export default function FinalQuestion() {
-  const [noButtonPos, setNoButtonPos] = useState({ top: 'auto', left: 'auto', position: 'static' as const });
+  const [noButtonPos, setNoButtonPos] = useState<{ 
+    top: string; 
+    left: string; 
+    position: 'static' | 'relative' 
+  }>({ 
+    top: 'auto', 
+    left: 'auto', 
+    position: 'static' 
+  });
   const [isAccepted, setIsAccepted] = useState(false);
 
   const handleNoHover = () => {
